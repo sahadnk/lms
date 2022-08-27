@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  mysql:
+    build: ./db
+    container_name: library_db
+    restart: always
+    volumes:
+      - ./database:/var/lib/mysql
+      - ./feed/book.sql:/docker-entrypoint-initdb.d/book.sql
+    ports:
+      - '3306:3306'
+    command: mysqld --default-authentication-plugin=mysql_native_password
+  lms:
+    build: ./lib
+    container_name: lms
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - '9988:9988'
